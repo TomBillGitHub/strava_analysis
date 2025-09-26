@@ -1,8 +1,15 @@
 import pandas as pd
 import argparse
 import logging
+import requests
+import json
+import subprocess
 from cleansing import cleansing_steps
-from analysis.analysis import StravaAnalysis
+# from analysis.analysis import StravaAnalysis
+from classes.refresh_token import Authentication
+
+client_id = '139812'
+client_secret = 'c3400b5ee2e89949f5799f4d67ae29e409844444'
 
 
 ########################################
@@ -26,8 +33,6 @@ def run(data):
     if args.all == True or args.correlation == True:
         correlations = strava_analysis(tom_s)
         corr_heatmap = correlations.correlations()
-        exit()
-
 
 ########################################
 ########################################
@@ -35,6 +40,23 @@ def run(data):
 
 
 if __name__=="__main__":
+
+    # result = subprocess.run(['./request.sh'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    # data = json.loads(result.stdout)
+    # df = pd.DataFrame(data)
+
+    token = Authentication.authorise(client_id, client_secret)
+
+    page = 1
+
+    endpoint = f"https://www.strava.com/api/v3/athlete/activities?" \
+                f"access_token={token['access_token']}&" \
+                f"page={page}&" \
+                f"per_page=10"
+    
+    response = requests.get(endpoint).json()
+    r_data = pd.DataFrame(response)
+    breakpoint()
 
     tom_strava_data = pd.read_csv('/workspaces/Portfolio/Strava/tom_strava_activities.csv')
 
