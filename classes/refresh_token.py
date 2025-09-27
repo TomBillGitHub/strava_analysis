@@ -85,7 +85,7 @@ class Authentication:
         
         # recieve code once user has logged in
         code = input('Insert the code from the url: ')
-        code = '2ccd5192b45f68395969a584cb1d3eac24838313'
+        code = '8ed0d706d0ff7c82842cbba54b8851f481c1a92a'
 
         # Get the access token
         token = requests.post(url='https://www.strava.com/api/v3/oauth/token',

@@ -4,6 +4,7 @@ import logging
 import requests
 import json
 import subprocess
+import pprint as pprint
 from cleansing import cleansing_steps
 # from analysis.analysis import StravaAnalysis
 from classes.refresh_token import Authentication
@@ -52,13 +53,32 @@ if __name__=="__main__":
     endpoint = f"https://www.strava.com/api/v3/athlete/activities?" \
                 f"access_token={token['access_token']}&" \
                 f"page={page}&" \
-                f"per_page=10"
+                f"per_page=5"
     
     response = requests.get(endpoint).json()
-    r_data = pd.DataFrame(response)
-    breakpoint()
+    normalised = pd.json_normalize(response).to_csv('normalised.csv', index=False)
 
-    tom_strava_data = pd.read_csv('/workspaces/Portfolio/Strava/tom_strava_activities.csv')
+    breakpoint()
+  
+
+    def get_all_keys(data, parent_key=''):
+        keys = []
+        if isinstance(data, dict):
+            for k, v in data.items():
+                full_key = f"{parent_key}.{k}" if parent_key else k
+                keys.append(full_key)
+                keys.extend(get_all_keys(v, full_key))
+        elif isinstance(data, list):
+            for i, item in enumerate(data):
+                full_key = f"{parent_key}[{i}]"
+                keys.extend(get_all_keys(item, full_key))
+        return keys
+
+    out = get_all_keys(resp.json())
+    breakpoint()
+    # tom_strava_data = pd.read_csv('data_output.csv')
+
+    # tom_strava_data = pd.read_csv('/workspaces/Portfolio/Strava/tom_strava_activities.csv')
 
     parser = argparse.ArgumentParser()
 

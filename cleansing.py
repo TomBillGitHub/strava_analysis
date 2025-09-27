@@ -18,6 +18,7 @@ class cleansing_steps:
         - Setting correct index
         - Renaming columns
         """
+        breakpoint()
         strava_df = self.data.drop(columns=[
             'Relative Effort', 'Commute',
             'Activity Private Note',
